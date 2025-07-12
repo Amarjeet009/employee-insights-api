@@ -1,0 +1,35 @@
+spring:
+  profiles:
+    active: dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  r2dbc:
+    url: r2dbc:postgresql://192.168.1.18:5433
+    username: postgres
+    password: password
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  r2dbc:
+    url: r2dbc:postgresql://prod-server:5432/amarj
+    username: postgres
+    password: admin
+
+---
+server:
+  port: 8083
+  error:
+    include-message: always
+
+
+

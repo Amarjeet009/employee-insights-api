@@ -115,9 +115,9 @@ gradlew.bat build
 
 ### `Docker build`
 ```jsunicoderegexp
-docker build -t my-backend-service .
+docker build -t employee-insights-api .
 ```
 ### `Run Docker build`
 ```jsunicoderegexp
-docker run -p 8082:8080 my-backend-service
+docker run -p 8084:8080 employee-insights-api
 ```
