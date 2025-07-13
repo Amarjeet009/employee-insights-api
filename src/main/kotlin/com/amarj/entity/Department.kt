@@ -18,5 +18,5 @@ data class Department(
 
     @NotNull(message = "Status cannot be null")
     @Column("is_active")
-    val status: Int
+    val status: Int = 1 // 1 for active, 0 for inactive
 )
