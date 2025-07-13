@@ -48,49 +48,106 @@ CREATE TABLE IF NOT EXISTS grade_and_role (
     role_name VARCHAR(250),
     grade INTEGER,
     salary_range VARCHAR(500),
+    department_id INTEGER REFERENCES department(id),
     is_active INTEGER
 );
 ```
-### Table: `employee`
+### Table: `employee & it's detail`
 
 ```sql
 CREATE TABLE IF NOT EXISTS employee (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     first_name VARCHAR(250),
     last_name VARCHAR(250),
-    age INTEGER,
+    middle_name VARCHAR(250),
     role_id INTEGER REFERENCES grade_and_role(id),
-    department_id INTEGER REFERENCES department(id),
-    phone_number VARCHAR(250),
     joined_on DATE,
-    address VARCHAR(250),
-    date_of_birth DATE,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
 
-```
-### Table: `employee_salary`
-
-```sql
-CREATE TABLE IF NOT EXISTS employee_salary (
+CREATE TABLE IF NOT EXISTS employee_personal_detail (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    emp_id INTEGER REFERENCES employee(id), 
-    salary INTEGER,
+    emp_id INTEGER REFERENCES employee(id),
+    emp_date_of_birth DATE,
+    father_name VARCHAR(50),
+    fathre_dob DATE,
+    mother_name VARCHAR(50),
+    mother_dob DATE,
+    is_married INTEGER,
+    spouse_name VARCHAR(50),
+    spoouse_dob DATE,
+    children_count INTEGER,
+    child_first_name VARCHAR(50),
+    child_first_dob DATE,
+    child_second_name VARCHAR(50),
+    child_second_dob DATE,
+    child_third_name VARCHAR(50),
+    child_third_dob DATE,
+    updated_at TIMESTAMP,
     is_active INTEGER
 );
-```
-### Table: `employee_attendance`
 
-```sql
+CREATE TABLE IF NOT EXISTS employee_address (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    emp_id INTEGER REFERENCES employee(id),
+    country_code VARCHAR(50),
+    phone_number VARCHAR(50),
+    alternate_nubmber VARCHAR(50),
+    house_number VARCHAR(250),
+    city VARCHAR(250),
+    state DATE,
+    zip_code VARCHAR(50),
+    updated_at TIMESTAMP,
+    is_active INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS employee_current_salary (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    emp_id INTEGER REFERENCES employee(id), 
+    ctc_salary INTEGER,
+    is_active INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS employee_banking_detail (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    emp_id INTEGER REFERENCES employee(id), 
+    pan_number VARCHAR(50),
+    uan_number VARCHAR(50),
+    pf_number VARCHAR(50),
+    work_days INTEGER,
+    bank_name VARCHAR(250),
+    account_number VARCHAR(50),
+    ifsc_code VARCHAR(50),
+    branch VARCHAR(50),
+    is_active INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS employee_created_salary (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    emp_id INTEGER REFERENCES employee(id),
+    banking_id INTEGER REFERENCES employee_banking_detail(id),
+    basic_salary INTEGER,
+    house_rent_allowance INTEGER,
+    special_allowance INTEGER,
+    pf_amount INTEGER,
+    income_tax INTEGER,
+    gross_earning INTEGER,
+    net_pay INTEGER,
+    created_date TIMESTAMP,
+    is_active INTEGER
+);
+
 CREATE TABLE IF NOT EXISTS employee_attendance (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     emp_id INTEGER REFERENCES employee(id), 
-    salary INTEGER,
+    is_present INTEGER,
+    created_date TIMESTAMP,
     is_active INTEGER
 );
 
 ```
+
 
 ### `To build your project using Gradle from the command line, you can run:`
 ```jsunicoderegexp
