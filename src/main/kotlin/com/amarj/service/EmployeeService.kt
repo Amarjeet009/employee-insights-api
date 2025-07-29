@@ -6,10 +6,9 @@ import com.amarj.entity.EmployeeBankingDetail
 import com.amarj.entity.EmployeePersonalDetail
 import com.amarj.exception.NotFoundException
 import com.amarj.model.EmpAddressRequestDTO
-import com.amarj.model.EmpDetailsRequestDTO
-import com.amarj.model.EmpPersonalDetailRequestDTO
 import com.amarj.model.EmpBankingDetailRequestDTO
-import com.amarj.model.EmployeeRequestDTO
+import com.amarj.model.EmpPersonalDetailRequestDTO
+import com.amarj.model.EmpRequestDTO
 import com.amarj.repository.EmployeeAddressRepository
 import com.amarj.repository.EmployeeBankingDetailRepository
 import com.amarj.repository.EmployeePersonalDetailRepository
@@ -31,15 +30,10 @@ class EmployeeService(
 ) {
 
 
-    fun getAllEmployees(): Flux<Employee> =
-        empRepo.findAll()
-            .sort { e1, e2 -> (e1.id?:-1).compareTo(e2.id?: -1) }
-            .switchIfEmpty(
-                Mono.error(NotFoundException("Employees not found"))
-            )
 
 
-    fun saveEmployees(requests: List<EmployeeRequestDTO>): Flux<Employee> {
+
+    fun saveEmployees(requests: List<EmpRequestDTO>): Flux<Employee> {
         return Flux.fromIterable(requests)
             .flatMap { req ->
                 val emailMono = if (req.emailId.isBlank()) {
@@ -112,7 +106,7 @@ class EmployeeService(
         return tryGenerate()
     }
 
-    fun updateEmployee(id: Long, employee: EmployeeRequestDTO): Mono<Employee> {
+    fun updateEmployee(id: Long, employee: EmpRequestDTO): Mono<Employee> {
         return empRepo.findById(id)
             .switchIfEmpty(Mono.error(NotFoundException("Employee with ID $id not found")))
             .flatMap { existingEmployee ->
@@ -152,33 +146,7 @@ class EmployeeService(
             }
     }
 
-    /**
-     * Finds an employee by id, first name, last name, empCode or email ID.
-     * If no employee is found, it throws a NotFoundException.
-     */
-    fun findEmployeeDetails(request: EmpDetailsRequestDTO): Flux<Employee> {
-        return when {
-            request.id != null -> empRepo.findById(request.id)
-                .switchIfEmpty(Mono.error(NotFoundException("Employee with ID ${request.id} not found")))
-                .flux()
 
-            request.empCode != null -> empRepo.findByEmpCode(request.empCode)
-                .switchIfEmpty(Mono.error(NotFoundException("Employee with code ${request.empCode} not found")))
-                .flux()
-
-            request.emailId != null -> empRepo.findByEmailId(request.emailId)
-                .switchIfEmpty(Mono.error(NotFoundException("Employee with email ${request.emailId} not found")))
-                .flux()
-
-            request.firstName != null -> empRepo.findByFirstName(request.firstName)
-                .switchIfEmpty(Flux.error(NotFoundException("Employee with first name ${request.firstName} not found")))
-
-            request.lastName != null -> empRepo.findByLastName(request.lastName)
-                .switchIfEmpty(Flux.error(NotFoundException("Employee with last name ${request.lastName} not found")))
-
-            else -> Flux.error(NotFoundException("No valid search parameter provided"))
-        }
-    }
 
     /**
      * Deletes an employee by ID.
@@ -349,8 +317,6 @@ class EmployeeService(
                 empPersonalDetailRepo.save(personalDetail)
             }
     }
-
-
 
     fun updateEmployeePersonalDetail(employeeId:Long,request: EmpPersonalDetailRequestDTO): Mono<EmployeePersonalDetail> {
         return empPersonalDetailRepo.findByEmployeeId(employeeId)

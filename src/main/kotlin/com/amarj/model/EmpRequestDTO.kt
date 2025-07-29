@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 
 
-data class EmployeeRequestDTO(
+data class EmpRequestDTO(
     @field:NotNull(message = "First Name cannot be null")
     val firstName: String,
 

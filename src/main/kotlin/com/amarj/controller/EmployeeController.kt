@@ -8,7 +8,7 @@ import com.amarj.model.EmpAddressRequestDTO
 import com.amarj.model.EmpBankingDetailRequestDTO
 import com.amarj.model.EmpDetailsRequestDTO
 import com.amarj.model.EmpPersonalDetailRequestDTO
-import com.amarj.model.EmployeeRequestDTO
+import com.amarj.model.EmpRequestDTO
 import com.amarj.response.ApiResponse
 import com.amarj.response.ResponseBuilder
 import com.amarj.service.EmployeeService
@@ -33,7 +33,7 @@ class EmployeeController(
 ) {
 
     @PostMapping("/saveEmployees")
-    fun saveEmployees(@Valid @RequestBody requests: List<EmployeeRequestDTO>): Mono<ResponseEntity<ApiResponse<List<Employee?>?>>> =
+    fun saveEmployees(@Valid @RequestBody requests: List<EmpRequestDTO>): Mono<ResponseEntity<ApiResponse<List<Employee?>?>>> =
         employeeService.saveEmployees(requests)
             .collectList()
             .map { savedList ->
@@ -52,7 +52,7 @@ class EmployeeController(
     @PutMapping("/updateEmployee/{id}")
     fun updateEmployee(
         @PathVariable id: Long,
-        @Valid @RequestBody request: EmployeeRequestDTO
+        @Valid @RequestBody request: EmpRequestDTO
     ): Mono<ResponseEntity<ApiResponse<Employee?>>> =
         employeeService.updateEmployee(id, request)
             .map { updatedEmployee ->
@@ -67,17 +67,6 @@ class EmployeeController(
                 )
             }
 
-    @PostMapping("/findEmployeeDetails")
-    fun findEmployeeDetails(@Valid @RequestBody request: EmpDetailsRequestDTO): Mono<ResponseEntity<ApiResponse<List<Employee?>?>>> {
-        return employeeService.findEmployeeDetails(request)
-            .collectList()
-            .map { employeeList ->
-                ResponseBuilder.success<List<Employee?>?>("Employees retrieved successfully", employeeList)
-            }
-            .onErrorResume { ex ->
-                Mono.just(ResponseBuilder.error<List<Employee?>?>("Failed to retrieve employees: ${ex.message}", HttpStatus.INTERNAL_SERVER_ERROR))
-            }
-    }
 
 
 
@@ -86,22 +75,8 @@ class EmployeeController(
 
 
 
-    @GetMapping("/getAllEmployees")
-    fun getAllEmployees(): Mono<ResponseEntity<ApiResponse<List<Employee>?>>> {
-        return employeeService.getAllEmployees()
-            .collectList()
-            .map { empList: List<Employee>? ->
-                ResponseBuilder.success<List<Employee>?>("Employees retrieved successfully", empList)
-            }
-            .onErrorResume { ex ->
-                Mono.just(
-                    ResponseBuilder.error<List<Employee>?>(
-                        "Failed to retrieve employees: ${ex.message}",
-                        HttpStatus.BAD_REQUEST
-                    )
-                )
-            }
-    }
+
+
 
 
     @DeleteMapping("/deleteEmployee/{id}")
