@@ -4,7 +4,7 @@ import com.amarj.entity.Department
 import com.amarj.exception.BadRequestException
 import com.amarj.repository.DepartmentRepository
 import  com.amarj.exception.NotFoundException
-import com.amarj.model.DepartmentRequest
+import com.amarj.model.DepartmentRequestDTO
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -17,7 +17,12 @@ class DepartmentService(
 
 
     fun getAllDepartment(): Flux<Department> =
-        departmentRepo.findAll();
+        departmentRepo.findAll()
+            .switchIfEmpty(
+                Mono.error(
+                    NotFoundException("No departments found")
+                )
+            );
 
     fun getDepartmentById(id: Long): Mono<Department> =
         departmentRepo.findById(id)
@@ -27,7 +32,7 @@ class DepartmentService(
                 )
             );
 
-    fun saveDepartments(requests: List<DepartmentRequest>): Flux<Department> {
+    fun saveDepartments(requests: List<DepartmentRequestDTO>): Flux<Department> {
         val validationFlux = Flux.fromIterable(requests)
             .flatMap { req ->
                 findByNameOrError(req.name)
@@ -44,7 +49,7 @@ class DepartmentService(
     }
 
 
-    fun validateUniqueNames(requests: List<DepartmentRequest>): Mono<Void> {
+    fun validateUniqueNames(requests: List<DepartmentRequestDTO>): Mono<Void> {
         val validations = requests.map { req ->
             findByNameOrError(req.name)
                 .onErrorResume { ex ->
@@ -68,7 +73,7 @@ class DepartmentService(
             }
 
 
-    fun updateDepartment(id: Long, departmentRequest: DepartmentRequest): Mono<Department> =
+    fun updateDepartment(id: Long, departmentRequest: DepartmentRequestDTO): Mono<Department> =
         getDepartmentById(id).flatMap { existingDepartment ->
             val isNameChanged = departmentRequest.name != existingDepartment.name
 

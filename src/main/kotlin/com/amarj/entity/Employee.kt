@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-import java.util.Date
+import java.time.LocalDate
 
 @Table(name = "employee")
 data class Employee(
@@ -39,14 +39,14 @@ data class Employee(
 
     @NotNull(message = "Joined cannot be null")
     @Column("joined_on")
-    val joinedOn: Date,
+    val joinedOn: LocalDate?,
 
     @NotNull(message = "Added Date cannot be null")
     @Column("created_at")
-    val createdAt: Date,
+    val createdAt: LocalDate? = null,
 
     @Column("updated_at")
-    val updatedAt: Date? = null,
+    val updatedAt: LocalDate? = null,
 
     @Column("is_active")
     val status: Int = 1 // 1 for active, 0 for inactive

@@ -31,5 +31,16 @@ server:
   error:
     include-message: always
 
+---
+spring:
+  r2dbc:
+    show-sql: true
+
+logging:
+  level:
+    org.springframework.data.r2dbc: DEBUG
+    io.r2dbc.postgresql: TRACE
+
+
 
 

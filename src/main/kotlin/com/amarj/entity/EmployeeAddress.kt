@@ -4,26 +4,26 @@ import jakarta.validation.constraints.NotNull
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
-import java.util.Date
+import java.time.LocalDate
 
 @Table(name = "employee_address")
 data class EmployeeAddress(
     @Id
-    val id: Long? = null,
+    private val id: Long? = null,
     
     @Column("emp_id")
-    val employeeId: Long,
+    private val employeeId: Long,
 
     @NotNull(message = "Country code cannot be null")
     @Column("country_code")
-    val countryCode: String,
+    private val countryCode: String,
 
     @NotNull(message = "Phone number cannot be null")
     @Column("phone_number")
-    val phoneNumber: String,
+    private val phoneNumber: String,
 
     @Column("alternate_number")
-    val alternateNumber: String? = null,
+    private val alternateNumber: String? = null,
 
     @Column("emergency_contact_name")
     private val emergencyContactName: String? = null,
@@ -44,23 +44,23 @@ data class EmployeeAddress(
 
     @NotNull(message = "City cannot be null")
     @Column("city")
-    val city: String,
+    private val city: String,
 
     @NotNull(message = "State cannot be null")
     @Column("state")
-    val state: String,
+    private val state: String,
 
     @NotNull(message = "Country cannot be null")
     @Column("country")
-    val country: String,
+    private val country: String,
 
     @NotNull(message = "Postal/ZIP code cannot be null")
     @Column("postal_code")
-    val postalCode: String,
+    private val postalCode: String,
 
     @Column("updated_at")
-    val updatedAt: Date? = null,
+    private val updatedAt: LocalDate? = null,
 
     @Column("is_active")
-    val status: Int? = 1,
+    private val status: Int? = 1,
 )

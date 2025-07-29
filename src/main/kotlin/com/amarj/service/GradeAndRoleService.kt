@@ -4,7 +4,7 @@ package com.amarj.service
 import com.amarj.entity.GradeAndRole
 import com.amarj.exception.BadRequestException
 
-import com.amarj.model.GradeAndRoleRequest
+import com.amarj.model.GradeAndRoleRequestDTO
 import com.amarj.repository.GradeAndRoleRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -16,7 +16,12 @@ import reactor.core.publisher.Mono
 class GradeAndRoleService(private val gradeAndRoleRepo: GradeAndRoleRepository) {
 
     fun getAllGradeAndRole(): Flux<GradeAndRole> =
-        gradeAndRoleRepo.findAll();
+        gradeAndRoleRepo.findAll()
+            .switchIfEmpty(
+                Mono.error(
+                    BadRequestException("No Grade and Role found")
+                )
+            )
 
 
     fun getGradeAndRoleById(id: Long): Mono<GradeAndRole?> =
@@ -27,7 +32,7 @@ class GradeAndRoleService(private val gradeAndRoleRepo: GradeAndRoleRepository) 
                 )
             )
 
-    fun saveGradeAndRole(request: List<GradeAndRoleRequest>): Flux<GradeAndRole> {
+    fun saveGradeAndRole(request: List<GradeAndRoleRequestDTO>): Flux<GradeAndRole> {
         val validationFlux = Flux.fromIterable(request)
             .flatMap { req ->
                 findByNameOrError(req.roleName)
@@ -49,7 +54,7 @@ class GradeAndRoleService(private val gradeAndRoleRepo: GradeAndRoleRepository) 
     }
 
 
-    fun validateUniqueNames(requests: List<GradeAndRoleRequest>): Mono<Void> {
+    fun validateUniqueNames(requests: List<GradeAndRoleRequestDTO>): Mono<Void> {
         val validations = requests.map { req ->
             findByNameOrError(req.roleName)
                 .onErrorResume { ex ->
@@ -70,7 +75,7 @@ class GradeAndRoleService(private val gradeAndRoleRepo: GradeAndRoleRepository) 
                 }
             }
 
-    fun updateGradeAndRole(id: Long, request: GradeAndRoleRequest): Mono<GradeAndRole> =
+    fun updateGradeAndRole(id: Long, request: GradeAndRoleRequestDTO): Mono<GradeAndRole> =
         gradeAndRoleRepo.findById(id)
             .switchIfEmpty(
                 Mono.error(

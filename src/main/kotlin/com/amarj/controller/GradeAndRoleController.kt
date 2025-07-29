@@ -1,8 +1,7 @@
 package com.amarj.controller
 
-import com.amarj.entity.Department
 import com.amarj.entity.GradeAndRole
-import com.amarj.model.GradeAndRoleRequest
+import com.amarj.model.GradeAndRoleRequestDTO
 import com.amarj.response.ApiResponse
 import com.amarj.response.ResponseBuilder
 import com.amarj.service.GradeAndRoleService
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
 @RestController
-@RequestMapping("/api/gradeAndRole")
+@RequestMapping("/api/v1/gradeAndRole")
 class GradeAndRoleController(private val gradeAndRoleService: GradeAndRoleService) {
 
     @GetMapping("/getAllGradeAndRole")
@@ -44,7 +43,7 @@ class GradeAndRoleController(private val gradeAndRoleService: GradeAndRoleServic
                 Mono.just(ResponseBuilder.error<GradeAndRole?>("Role not found: ${ex.message}", HttpStatus.NOT_FOUND))
             }
     @PostMapping("/saveGradeAndRole")
-    fun saveGradeAndRole(@Valid @RequestBody requests: List<GradeAndRoleRequest>): Mono<ResponseEntity<ApiResponse<List<GradeAndRole?>?>>> =
+    fun saveGradeAndRole(@Valid @RequestBody requests: List<GradeAndRoleRequestDTO>): Mono<ResponseEntity<ApiResponse<List<GradeAndRole?>?>>> =
         gradeAndRoleService.saveGradeAndRole(requests)
             .collectList()
             .map { savedList ->
@@ -55,7 +54,7 @@ class GradeAndRoleController(private val gradeAndRoleService: GradeAndRoleServic
             }
 
     @PutMapping("/updateGradeAndRole/{id}")
-    fun updateGradeAndRole(@PathVariable id: Long, @Valid @RequestBody request: GradeAndRoleRequest): Mono<ResponseEntity<ApiResponse<GradeAndRole?>>> =
+    fun updateGradeAndRole(@PathVariable id: Long, @Valid @RequestBody request: GradeAndRoleRequestDTO): Mono<ResponseEntity<ApiResponse<GradeAndRole?>>> =
         gradeAndRoleService.updateGradeAndRole(id,request)
             .map { updated ->
                 ResponseBuilder.success<GradeAndRole?>("Department with ID ${updated.id} updated", updated)
