@@ -2,7 +2,7 @@ package com.amarj.service
 
 import com.amarj.entity.Department
 import com.amarj.exception.NotFoundException
-import com.amarj.model.DepartmentRequest
+import com.amarj.model.DepartmentRequestDTO
 import com.amarj.repository.DepartmentRepository
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -60,8 +60,8 @@ class DepartmentServiceTest {
     @Test
     fun `saveDepartments saves batch of departments`() {
         val requests = listOf(
-            DepartmentRequest(name = "Finance", status = 1),
-            DepartmentRequest(name = "Marketing", status = 1)
+            DepartmentRequestDTO(name = "Finance", status = 1),
+            DepartmentRequestDTO(name = "Marketing", status = 1)
         )
         val departments = listOf(
             Department(id = null, name = "Finance", status = 1),
@@ -81,7 +81,7 @@ class DepartmentServiceTest {
     @Test
     fun `updateDepartment updates department when name is changed and not duplicate`() {
         val existing = Department(id = 1, name = "IT", status = 1)
-        val request = DepartmentRequest(name = "Finance", status = 0)
+        val request = DepartmentRequestDTO(name = "Finance", status = 0)
         val updated = Department(id = 1, name = "Finance", status = 0)
 
         `when`(departmentRepo.findById(1)).thenReturn(Mono.just(existing))
@@ -96,7 +96,7 @@ class DepartmentServiceTest {
     @Test
     fun `updateDepartment returns error when new name is duplicate`() {
         val existing = Department(id = 1, name = "IT", status = 1)
-        val request = DepartmentRequest(name = "HR", status = 1)
+        val request = DepartmentRequestDTO(name = "HR", status = 1)
         val duplicate = Department(id = 2, name = "HR", status = 1)
 
         `when`(departmentRepo.findById(1)).thenReturn(Mono.just(existing))
@@ -110,7 +110,7 @@ class DepartmentServiceTest {
     @Test
     fun `updateDepartment updates department when name is unchanged`() {
         val existing = Department(id = 1, name = "IT", status = 1)
-        val request = DepartmentRequest(name = "IT", status = 2)
+        val request = DepartmentRequestDTO(name = "IT", status = 2)
         val updated = Department(id = 1, name = "IT", status = 2)
 
         `when`(departmentRepo.findById(1)).thenReturn(Mono.just(existing))

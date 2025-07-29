@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Min
 
-data class GradeAndRoleRequest(
+data class GradeAndRoleRequestDTO(
     @field:NotNull(message = "Grade must not be null")
     @field:Min(value = 20, message = "Grade must be greater than 0")
     val grade: Long,

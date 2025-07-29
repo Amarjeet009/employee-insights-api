@@ -1,7 +1,7 @@
 package com.amarj.controller
 
 import com.amarj.entity.Department
-import com.amarj.model.DepartmentRequest
+import com.amarj.model.DepartmentRequestDTO
 import com.amarj.response.ApiResponse
 import com.amarj.response.ResponseBuilder
 import com.amarj.service.DepartmentService
@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono
 
 
 @RestController
-@RequestMapping("/api/department")
+@RequestMapping("/api/v1/department")
 class DepartmentController (
     private val departmentService: DepartmentService
 ) {
@@ -47,7 +47,7 @@ class DepartmentController (
             }
 
     @PostMapping("/saveDepartments")
-    fun saveDepartments(@Valid @RequestBody requests: List<DepartmentRequest>): Mono<ResponseEntity<ApiResponse<List<Department?>?>>> =
+    fun saveDepartments(@Valid @RequestBody requests: List<DepartmentRequestDTO>): Mono<ResponseEntity<ApiResponse<List<Department?>?>>> =
         departmentService.saveDepartments(requests)
             .collectList()
             .map { savedList ->
@@ -60,7 +60,7 @@ class DepartmentController (
 
 
     @PutMapping("/updateDepartment/{id}")
-    fun updateDepartment(@PathVariable id: Long, @Valid @RequestBody departmentRequest: DepartmentRequest): Mono<ResponseEntity<ApiResponse<Department?>>> =
+    fun updateDepartment(@PathVariable id: Long, @Valid @RequestBody departmentRequest: DepartmentRequestDTO): Mono<ResponseEntity<ApiResponse<Department?>>> =
         departmentService.updateDepartment(id, departmentRequest)
             .map { updated ->
                 ResponseBuilder.success<Department?>("Department with ID ${updated.id} updated", updated)
