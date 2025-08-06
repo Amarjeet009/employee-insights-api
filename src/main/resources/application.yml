@@ -40,7 +40,18 @@ logging:
   level:
     org.springframework.data.r2dbc: DEBUG
     io.r2dbc.postgresql: TRACE
+---
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/emp-insights-db
 
+---
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 
 
