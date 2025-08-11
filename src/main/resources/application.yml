@@ -9,9 +9,9 @@ spring:
     activate:
       on-profile: dev
   r2dbc:
-    url: r2dbc:postgresql://192.168.1.18:5433
+    url: r2dbc:postgresql://192.168.1.20:5432/postgres
     username: postgres
-    password: password
+    password: amar1404
 
 
 ---
@@ -41,6 +41,14 @@ logging:
     org.springframework.data.r2dbc: DEBUG
     io.r2dbc.postgresql: TRACE
 
+---
 
-
-
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: emp-insights-db
+      username: amar
+      password: amar1404
+      authentication-database: admin
