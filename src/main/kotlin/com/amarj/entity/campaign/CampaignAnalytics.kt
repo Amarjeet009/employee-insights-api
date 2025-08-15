@@ -6,5 +6,8 @@ data class CampaignAnalytics(
     val durationDays: Long,
     val roiPercentage: Double,
     val conversionRatePercentage: Double,
-    val revenuePerDollarSpent: Long
+    val revenuePerDollarSpent: Long,
+    val channel: String,
+    val targetAudience: String,
+    val type: String
 )

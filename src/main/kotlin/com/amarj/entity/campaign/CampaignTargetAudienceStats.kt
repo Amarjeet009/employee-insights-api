@@ -1,7 +1,7 @@
 package com.amarj.entity.campaign
 
-data class CampaignTypeStats(
-    val type: String,
+data class CampaignTargetAudienceStats(
+    val targetAudience: String,
     val totalBudget: Long,
     val totalROI: Long,
     val totalConversionRate: Double,
