@@ -46,6 +46,12 @@ class ClientInfoController(private val clientInfoService: ClientInfoService) {
             "hobbies" -> clientInfoService.getSpentAndOrderByHobbies()
                 .collectList()
                 .map { SpentSummaryResponse("hobbies", it.map { item -> item as Any }) }
+            "agegroup" -> clientInfoService.getSpentByAgeWithCount()
+                .collectList()
+                .map { SpentSummaryResponse("agegroup", it.map { item -> item as Any }) }
+            "spentandorder" -> clientInfoService.getSpentAndOrderByJob()
+                .collectList()
+                .map { SpentSummaryResponse("spentandorder", it.map { item -> item as Any }) }
 
             else -> Mono.error(IllegalArgumentException("Invalid groupBy value: $groupBy"))
         }
