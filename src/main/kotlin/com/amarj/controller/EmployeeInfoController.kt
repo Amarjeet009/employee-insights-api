@@ -1,26 +1,18 @@
 package com.amarj.controller
 
-import com.amarj.entity.Employee
 import com.amarj.entity.info.DepartmentAnalytics
 import com.amarj.entity.info.DepartmentSalary
+import com.amarj.entity.info.DeptJobRangeAgg
 import com.amarj.entity.info.EmployeeInfo
-import com.amarj.exception.NotFoundException
+import com.amarj.entity.info.analytics.GenderScoreSummary
+import com.amarj.entity.info.analytics.RoleScoreSummary
 import com.amarj.response.ApiResponse
 import com.amarj.response.ResponseBuilder
 import com.amarj.service.EmployeeInfoService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Flux
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
 @RestController
@@ -138,4 +130,74 @@ class EmployeeInfoController(val empInfoService: EmployeeInfoService) {
     }
 
 
+    /**
+     * Get average scores by role
+     * @return Mono<ResponseEntity<ApiResponse<List<RoleScoreSummary>?>>>
+     */
+    @GetMapping("/getAverageScoresByRole")
+    fun getAverageScoresByRole(): Mono<ResponseEntity<ApiResponse<List<RoleScoreSummary>?>>> {
+        return empInfoService.getAverageScoresByRole()
+            .collectList()
+            .map { roleScoreSummaryList ->
+                ResponseBuilder.success<List<RoleScoreSummary>?>(
+                    "Average scores by role retrieved successfully",
+                    roleScoreSummaryList
+                )
+            }
+            .onErrorResume { ex ->
+                Mono.just(
+                    ResponseBuilder.error<List<RoleScoreSummary>?>(
+                        "Failed to retrieve average scores by role: ${ex.message}",
+                        HttpStatus.BAD_REQUEST
+                    )
+                )
+            }
     }
+
+    /**
+     * Get average scores by
+     * @return Mono<ResponseEntity<ApiResponse<List<GenderScoreSummary>?>>>
+     */
+    @GetMapping("/getAverageScoresByGender")
+    fun getAverageScoresByGender(): Mono<ResponseEntity<ApiResponse<List<GenderScoreSummary>?>>> {
+        return empInfoService.getAverageScoresByGender()
+            .collectList()
+            .map { roleScoreSummaryList ->
+                ResponseBuilder.success<List<GenderScoreSummary>?>(
+                    "Average scores by gender retrieved successfully",
+                    roleScoreSummaryList
+                )
+            }
+            .onErrorResume { ex ->
+                Mono.just(
+                    ResponseBuilder.error<List<GenderScoreSummary>?>(
+                        "Failed to retrieve average scores by gender: ${ex.message}",
+                        HttpStatus.BAD_REQUEST
+                    )
+                )
+            }
+
+    }
+
+    @GetMapping("/getDeptByJobWithRanges")
+    fun getDeptByJobWithRanges():
+            Mono<ResponseEntity<ApiResponse<List<DeptJobRangeAgg>?>>> {
+        return empInfoService.getDeptByJobWithRanges()
+            .collectList()
+            .map { roleScoreSummaryList ->
+                ResponseBuilder.success<List<DeptJobRangeAgg>?>(
+                    "Average scores by gender retrieved successfully",
+                    roleScoreSummaryList
+                )
+            }
+            .onErrorResume { ex ->
+                Mono.just(
+                    ResponseBuilder.error<List<DeptJobRangeAgg>?>(
+                        "Failed to retrieve average scores by gender: ${ex.message}",
+                        HttpStatus.BAD_REQUEST
+                    )
+                )
+            }
+
+    }
+}
