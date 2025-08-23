@@ -1,17 +1,22 @@
 package com.amarj.service
 
 import com.amarj.entity.Department
+import com.amarj.entity.RoleWithDepartmentDTO
 import com.amarj.exception.BadRequestException
 import com.amarj.repository.DepartmentRepository
 import  com.amarj.exception.NotFoundException
 import com.amarj.model.DepartmentRequestDTO
+import io.r2dbc.spi.ConnectionFactory
+import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
 class DepartmentService(
-    private val departmentRepo: DepartmentRepository
+    private val departmentRepo: DepartmentRepository,
+    private val dbClient: DatabaseClient,
+    private val connectionFactory: ConnectionFactory
 
 ) {
 
@@ -109,5 +114,28 @@ class DepartmentService(
                 departmentRepo.delete(foundDepartment);
             }
 
+    fun fetchActiveRolesWithDepartments(): Flux<RoleWithDepartmentDTO> {
+        val query = """
+            SELECT gr.id, gr.role_name, gr.grade, gr.salary_range, gr.department_id,
+                   d.department_name, gr.is_active
+            FROM grade_and_role gr
+            JOIN department d ON gr.department_id = d.id
+            WHERE d.is_active = 1 AND gr.is_active = 1
+        """.trimIndent()
 
+        return dbClient.sql(query)
+            .map { row, _ ->
+                RoleWithDepartmentDTO(
+                    id = row.get("id", java.lang.Long::class.java)!!,
+                    roleName = row.get("role_name", String::class.java)!!,
+                    grade = row.get("grade", String::class.java)!!,
+                    salaryRange = row.get("salary_range", String::class.java)!!,
+                    departmentId = row.get("department_id", java.lang.Long::class.java)!!,
+                    departmentName = row.get("department_name", String::class.java)!!,
+                    isActive = row.get("is_active", java.lang.Integer::class.java)!!
+                )
+            }
+            .all() // ✅ returns Flux<RoleWithDepartmentDTO>
+    }
 }
+

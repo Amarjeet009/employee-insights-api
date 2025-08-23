@@ -336,7 +336,7 @@ class EmployeeService(
                     spouseName = request.spouseName,
                     spouseDOB = request.spouseDOB,
                     spouseOccupation = request.spouseOccupation,
-                    childrenCount = request.childrenCount ?: 0,
+                    childrenCount = request.childrenCount,
                     childFirstName = request.childFirstName,
                     childFirstDOB = request.childFirstDOB,
                     childSecondName = request.childSecondName,
