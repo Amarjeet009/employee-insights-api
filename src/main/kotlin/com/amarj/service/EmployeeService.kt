@@ -3,6 +3,7 @@ package com.amarj.service
 import com.amarj.entity.Employee
 import com.amarj.entity.EmployeeAddress
 import com.amarj.entity.EmployeeBankingDetail
+import com.amarj.entity.EmployeeDetailsDto
 import com.amarj.entity.EmployeePersonalDetail
 import com.amarj.exception.NotFoundException
 import com.amarj.model.EmpAddressRequestDTO
@@ -14,6 +15,7 @@ import com.amarj.repository.EmployeeAddressRepository
 import com.amarj.repository.EmployeeBankingDetailRepository
 import com.amarj.repository.EmployeePersonalDetailRepository
 import com.amarj.repository.EmployeeRepository
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -27,7 +29,8 @@ class EmployeeService(
     private val empRepo: EmployeeRepository,
     private val empAddressRepo: EmployeeAddressRepository,
     private val empPersonalDetailRepo: EmployeePersonalDetailRepository,
-    private val empBankingDetailRepo: EmployeeBankingDetailRepository
+    private val empBankingDetailRepo: EmployeeBankingDetailRepository,
+    private val client: R2dbcEntityTemplate
 ) {
 
 
@@ -441,6 +444,48 @@ class EmployeeService(
                 )
             )
     }
+
+    fun fetchEmployeeDetails(): Flux<EmployeeDetailsDto> {
+        val sql = """
+            SELECT 
+              e.id,
+              e.emp_code,
+              e.first_name,
+              e.middle_name,
+              e.last_name,
+              e.email_id,
+              e.gender,
+              e.joined_on,
+              e.is_active,
+              gr.grade,
+              gr.role_name,
+              gr.salary_range,
+              d.department_name
+            FROM employee e
+            INNER JOIN grade_and_role gr ON e.role_id = gr.id
+            INNER JOIN department d ON gr.department_id = d.id
+        """.trimIndent()
+
+        return client.databaseClient.sql(sql)
+            .map { row, _ ->
+                EmployeeDetailsDto(
+                    id = row.get("id", Long::class.java)!!,
+                    empCode = row.get("emp_code", String::class.java)!!,
+                    firstName = row.get("first_name", String::class.java)!!,
+                    middleName = row.get("middle_name", String::class.java),
+                    lastName = row.get("last_name", String::class.java)!!,
+                    emailId = row.get("email_id", String::class.java)!!,
+                    gender = row.get("gender", String::class.java)!!,
+                    joinedOn = row.get("joined_on", LocalDate::class.java)!!,
+                    isActive = row.get("is_active", java.lang.Integer::class.java)!!,
+                    grade = row.get("grade", String::class.java)!!,
+                    roleName = row.get("role_name", String::class.java)!!,
+                    salaryRange = row.get("salary_range", String::class.java)!!,
+                    departmentName = row.get("department_name", String::class.java)!!
+                )
+            }.all()
+    }
+
 }
 
 

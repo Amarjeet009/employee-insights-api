@@ -3,6 +3,7 @@ package com.amarj.controller
 import com.amarj.entity.Employee
 import com.amarj.entity.EmployeeAddress
 import com.amarj.entity.EmployeeBankingDetail
+import com.amarj.entity.EmployeeDetailsDto
 import com.amarj.entity.EmployeePersonalDetail
 import com.amarj.model.EmpAddressRequestDTO
 import com.amarj.model.EmpBankingDetailRequestDTO
@@ -77,6 +78,8 @@ class EmployeeController(
             .onErrorResume { ex ->
                 Mono.just(ResponseBuilder.error<List<Employee?>?>("Failed to retrieve employees: ${ex.message}", HttpStatus.INTERNAL_SERVER_ERROR))
             }
+
+
     }
 
 
@@ -227,6 +230,19 @@ class EmployeeController(
                         HttpStatus.BAD_REQUEST
                     )
                 )
+            }
+    }
+
+
+    @GetMapping("/fetchEmployeeDetails")
+    fun fetchEmployeeDetails(): Mono<ResponseEntity<ApiResponse<List<EmployeeDetailsDto?>?>>> {
+        return employeeService.fetchEmployeeDetails()
+            .collectList()
+            .map { employeeList ->
+                ResponseBuilder.success<List<EmployeeDetailsDto?>?>("Employees retrieved successfully", employeeList)
+            }
+            .onErrorResume { ex ->
+                Mono.just(ResponseBuilder.error<List<EmployeeDetailsDto?>?>("Failed to retrieve employees: ${ex.message}", HttpStatus.INTERNAL_SERVER_ERROR))
             }
     }
 }

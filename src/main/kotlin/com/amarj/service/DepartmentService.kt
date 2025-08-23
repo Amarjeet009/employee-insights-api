@@ -135,7 +135,7 @@ class DepartmentService(
                     isActive = row.get("is_active", java.lang.Integer::class.java)!!
                 )
             }
-            .all() // ✅ returns Flux<RoleWithDepartmentDTO>
+            .all()
     }
 }
 
