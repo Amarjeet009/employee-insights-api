@@ -178,7 +178,7 @@ gradlew.bat build
 ```
 ### `To skip tests:`
 ```jsunicoderegexp
-./gradlew build -x test
+./gradlew clean build -x test
 ```
 ### `To run your app (if using the application plugin):`
 ```jsunicoderegexp

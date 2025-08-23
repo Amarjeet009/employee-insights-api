@@ -9,7 +9,7 @@ spring:
     activate:
       on-profile: dev
   r2dbc:
-    url: r2dbc:postgresql://192.168.1.20:5432/postgres
+    url: r2dbc:postgresql://192.168.1.14:5433/postgres
     username: postgres
     password: amar1404
 
@@ -46,7 +46,7 @@ logging:
 spring:
   data:
     mongodb:
-      host: localhost
+      host: 192.168.1.14
       port: 27017
       database: emp-insights-db
       username: amar

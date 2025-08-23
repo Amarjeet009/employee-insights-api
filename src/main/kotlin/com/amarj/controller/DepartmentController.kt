@@ -1,6 +1,7 @@
 package com.amarj.controller
 
 import com.amarj.entity.Department
+import com.amarj.entity.RoleWithDepartmentDTO
 import com.amarj.model.DepartmentRequestDTO
 import com.amarj.response.ApiResponse
 import com.amarj.response.ResponseBuilder
@@ -77,7 +78,15 @@ class DepartmentController (
                 Mono.just(ResponseBuilder.error<Unit?>("Failed to delete Department with ID $id: ${ex.message}", HttpStatus.NOT_FOUND))
             }
 
-
-
+    @GetMapping("/getRolesWithDepartments")
+    fun fetchActiveRolesWithDepartments(): Mono<ResponseEntity<ApiResponse<List<RoleWithDepartmentDTO?>?>>> =
+        departmentService.fetchActiveRolesWithDepartments()
+            .collectList()
+            .map { rolesWithDepts ->
+                ResponseBuilder.success<List<RoleWithDepartmentDTO?>?>("Active roles with departments fetched successfully", rolesWithDepts)
+            }
+            .onErrorResume { ex ->
+                Mono.just(ResponseBuilder.error<List<RoleWithDepartmentDTO?>?>("Failed to fetch active roles with departments: ${ex.message}", HttpStatus.INTERNAL_SERVER_ERROR))
+            }
 
 }
